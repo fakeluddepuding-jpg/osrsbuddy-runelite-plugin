@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  * POST /plugin-claim   (exchange pairing code for an API token)
  * POST /plugin-sync    (push character snapshot)
  */
+
 @Slf4j
 @Singleton
 public class ApiClient
