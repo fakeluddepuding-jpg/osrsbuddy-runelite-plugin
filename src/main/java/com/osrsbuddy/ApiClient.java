@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Thin HTTP client for the two OSRSBuddy edge functions:
- *   POST /plugin-claim   (exchange pairing code for an API token)
- *   POST /plugin-sync    (push character snapshot)
+ * POST /plugin-claim   (exchange pairing code for an API token)
+ * POST /plugin-sync    (push character snapshot)
  */
 @Slf4j
 @Singleton
@@ -22,13 +22,21 @@ public class ApiClient
 {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    private final OkHttpClient http = new OkHttpClient.Builder()
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .build();
+    private final OkHttpClient http;
+    private final Gson gson;
+    private final OsrsBuddyConfig config;
 
-    @Inject private Gson gson;
-    @Inject private OsrsBuddyConfig config;
+    @Inject
+    private ApiClient(OkHttpClient runeliteHttpClient, Gson gson, OsrsBuddyConfig config)
+    {
+        this.gson = gson;
+        this.config = config;
+        
+        this.http = runeliteHttpClient.newBuilder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build();
+    }
 
     public interface Callback<T> { void onResult(T result, Throwable error); }
 
